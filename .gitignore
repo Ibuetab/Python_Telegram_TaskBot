@@ -1,0 +1,7 @@
+# Ignore TOKEN
+.env
+
+# Archivos de caché y entornos virtuales
+__pycache__/
+.venv/
+venv/
