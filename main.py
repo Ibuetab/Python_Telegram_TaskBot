@@ -178,6 +178,7 @@ async def delete_task(update:Update, context):
             await context.bot.send_message(chat_id=chat_id, text=f"La tarea {task} ha sido eliminada")
 
     else:
+    
         await context.bot.send_message(chat_id=chat_id, text=f"Usa el comando /start primero")
 
 
