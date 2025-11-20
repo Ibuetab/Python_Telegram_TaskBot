@@ -181,7 +181,18 @@ async def delete_task(update:Update, context):
         await context.bot.send_message(chat_id=chat_id, text=f"Usa el comando /start primero")
 
 
+async def show_tasks(update:Update, context):
 
+    chat_id = update.effective_chat.id
+
+    if chat_id in TASKLIST:
+        await context.bot.send_message(chat_id=chat_id, text=f"Tienes las siguientes tareas: ")
+        
+        for task in TASKLIST[chat_id]:
+            await context.bot.send_message(chat_id=chat_id, text=f"{task}")
+    
+    else:
+        await context.bot.send_message(chat_id=chat_id, text=f"Usa el comando /start primero")
 
 
 #BOT RUNNING
@@ -209,6 +220,7 @@ def main():
     app.add_handler(CommandHandler("help", help))
     app.add_handler(CommandHandler("addtask", add_task))
     app.add_handler(CommandHandler("deltask", delete_task))
+    app.add_handler(CommandHandler("showtasks", show_tasks))
    
    #---------------------------------------------------------------------------------------------------
 
