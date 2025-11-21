@@ -1,11 +1,14 @@
-import json
 import os
-import atexit
 import datetime
 import pytz
 from dotenv import load_dotenv
 from telegram import Update, Bot
 from telegram.ext import Application, ApplicationBuilder, CommandHandler, ContextTypes
+
+#---------------------------------------------------------------------------------------------------
+
+from persistence import TASKLIST, REGISTERED_USERS, load_data
+
 
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
@@ -16,72 +19,9 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not BOT_TOKEN:
     raise ValueError("El token de Telegram no se encontró. Asegúrate de que BOT_TOKEN esté definido en el archivo .env.")
 
-
-#REGISTER USERS
-#---------------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------
-
-USERS_DATA_FILE = "users_data.json"
-REGISTERED_USERS = {} #User data store on a dictionary
-
-
-def load_data():
-    global REGISTERED_USERS
-    if os.path.exists(USERS_DATA_FILE):
-        try:
-            with open(USERS_DATA_FILE, "r") as f:
-                data_from_json = json.load(f)
-                REGISTERED_USERS = {int(k): v for k, v in data_from_json.items()}
-                print(f" Datos cargados: {len(REGISTERED_USERS)} usuarios en memoria.")
-
-        except json.JSONDecodeError:
-            print(" Error al leer el archivo JSON. Iniciando con diccionario vacío.")
-
-
-def save_data():
-    global REGISTERED_USERS
-    try:
-        with open(USERS_DATA_FILE, 'w') as f:
-            json.dump(REGISTERED_USERS, f, indent=4)
-        print(f"Datos guardados: {len(REGISTERED_USERS)} usuarios escritos en disco.")
-    except Exception as e:
-        print(f" Error al guardar datos: {e}")
-
-
-#REGISTER USERS' TASK
-#---------------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------
-
-USERS_TASK_LIST = "task_list.json"
-TASKLIST = {} #users tasklist stored on a dictionary
-
-def load_tasklist():
-    global TASKLIST
-    if os.path.exists(USERS_TASK_LIST):
-        try:
-            with open(USERS_TASK_LIST, "r") as f:
-                data_from_json = json.load(f)
-                TASKLIST = {int(k): v for k, v in data_from_json.items()}
-                print(f"Tareas cargadas de {len(TASKLIST)} usuarios")
-
-        except json.JSONDecodeError:
-            print(f"Error al cargar las tareas")
-
-def save_tasklist():
-    global TASKLIST
-    try:
-        with open(USERS_TASK_LIST, "w") as f:
-            json.dump(TASKLIST,f,indent=4)
-            print(f"Tareas guardadas de {len(TASKLIST)} usuarios")
-
-    except Exception as e:
-        print(f"Error al guardar las tareas {e}")
-
-
 #TIME ZONE
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
-
 
 ZONE = pytz.timezone("Europe/Madrid")
 time = datetime.time(hour=12, minute= 24, second=0, tzinfo=ZONE)
@@ -98,6 +38,8 @@ So, I tried to make a function which bot initialize the comunication with the us
 """
 
 async def start(update:Update, context):
+    global REGISTERED_USERS
+    global TASKLIST
 
     chat_id = update.effective_chat.id #get the chat_id
     user_id = update.effective_user.id #get the user id
@@ -206,11 +148,7 @@ def main():
     #---------------------------------------------------------------------------------------------------
 
     load_data()
-    load_tasklist()
-
-    atexit.register(save_data)
-    atexit.register(save_tasklist)
-
+  
     #---------------------------------------------------------------------------------------------------
 
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -227,7 +165,6 @@ def main():
 
 
     app.run_polling()
-
 
 
 #---------------------------------------------------------------------------------------------------
