@@ -1,9 +1,11 @@
-import os
 import datetime
-import pytz
-from telegram import Update, Bot
+from telegram import Update
 
-from persistence import TASKLIST, REGISTERED_USERS
+
+#LOCAL IMPORTS
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+import persistence
 from time_zone import ZONE, time
 
 
@@ -17,7 +19,6 @@ So, I tried to make a function which bot initialize the comunication with the us
 
 """
 
-
 async def start(update:Update, context):
     global REGISTERED_USERS
     global TASKLIST
@@ -26,15 +27,15 @@ async def start(update:Update, context):
     user_id = update.effective_user.id #get the user id
     username = update.effective_user.username #get the username
 
-    if chat_id not in REGISTERED_USERS:
+    if chat_id not in persistence.REGISTERED_USERS:
 
-        REGISTERED_USERS[chat_id] = {
+        persistence.REGISTERED_USERS[chat_id] = {
             'user_id': user_id,
             'username': username,
             'fecha_registro': str(datetime.datetime.now(ZONE))
         }
 
-        TASKLIST[chat_id] = []
+        persistence.TASKLIST[chat_id] = []
    
         if username:
             await context.bot.send_message(chat_id = chat_id, text=f"Hola, usuario @{username}, utiliza el comando /help para ver una lista de comandos disponibles")

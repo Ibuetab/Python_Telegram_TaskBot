@@ -9,18 +9,28 @@ import atexit
 USERS_DATA_FILE = "users_data.json"
 REGISTERED_USERS = {} #User data store on a dictionary
 
+USERS_TASK_LIST = "task_list.json"
+TASKLIST = {} #users tasklist stored on a dictionary
+
 
 def load_users():
     global REGISTERED_USERS
     if os.path.exists(USERS_DATA_FILE):
         try:
             with open(USERS_DATA_FILE, "r") as f:
-                data_from_json = json.load(f)
+
+                content = f.read().strip()
+                if not content:
+                    print(f"DEBUG: {USERS_DATA_FILE} está vacío.")
+                    return
+
+                data_from_json = json.loads(content)
                 REGISTERED_USERS = {int(k): v for k, v in data_from_json.items()}
                 print(f" Datos cargados: {len(REGISTERED_USERS)} usuarios en memoria.")
 
         except json.JSONDecodeError:
             print(" Error al leer el archivo JSON. Iniciando con diccionario vacío.")
+
 
 
 def save_users():
@@ -37,15 +47,21 @@ def save_users():
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 
-USERS_TASK_LIST = "task_list.json"
-TASKLIST = {} #users tasklist stored on a dictionary
+
 
 def load_tasklist():
     global TASKLIST
     if os.path.exists(USERS_TASK_LIST):
         try:
             with open(USERS_TASK_LIST, "r") as f:
-                data_from_json = json.load(f)
+
+                content = f.read().strip()
+                if not content:
+                    print(f"DEBUG: {USERS_TASK_LIST} está vacío.")
+                    return
+
+
+                data_from_json = json.loads(content)
                 TASKLIST = {int(k): v for k, v in data_from_json.items()}
                 print(f"Tareas cargadas de {len(TASKLIST)} usuarios")
 
