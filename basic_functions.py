@@ -20,8 +20,6 @@ So, I tried to make a function which bot initialize the comunication with the us
 """
 
 async def start(update:Update, context):
-    global REGISTERED_USERS
-    global TASKLIST
 
     chat_id = update.effective_chat.id #get the chat_id
     user_id = update.effective_user.id #get the user id
@@ -35,7 +33,10 @@ async def start(update:Update, context):
             'fecha_registro': str(datetime.datetime.now(ZONE))
         }
 
-        persistence.TASKLIST[chat_id] = []
+        persistence.TASKLIST[chat_id] = {
+            "pending_tasks": [],
+            "completed_tasks": []
+        }
    
         if username:
             await context.bot.send_message(chat_id = chat_id, text=f"Hola, usuario @{username}, utiliza el comando /help para ver una lista de comandos disponibles")

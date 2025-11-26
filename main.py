@@ -8,7 +8,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler
 #---------------------------------------------------------------------------------------------------
 import persistence
 from basic_functions import start, help
-from task_functions import add_task, delete_task, show_tasks
+from task_functions import add_task, delete_task, show_pending_tasks
 
 
 #BOT TOKEN
@@ -40,7 +40,7 @@ def main():
     app.add_handler(CommandHandler("help", help))
     app.add_handler(CommandHandler("addtask", add_task))
     app.add_handler(CommandHandler("deltask", delete_task))
-    app.add_handler(CommandHandler("showtasks", show_tasks))
+    app.add_handler(CommandHandler("showtasks", show_pending_tasks))
    
    #---------------------------------------------------------------------------------------------------
     app.run_polling()

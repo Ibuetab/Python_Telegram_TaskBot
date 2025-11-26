@@ -12,9 +12,9 @@ import persistence
 #---------------------------------------------------------------------------------------------------
 
 async def add_task(update:Update, context):
-
     chat_id = update.effective_chat.id
 
+    #If users only write /addtask without task
     if not context.args:
         await context.bot.send_message(chat_id=chat_id, text=f"Debes escribir el comando y el nombre de la tarea")
         return
@@ -23,13 +23,13 @@ async def add_task(update:Update, context):
 
     if chat_id in persistence.TASKLIST:
 
-        user_tasklist = persistence.TASKLIST[chat_id]
+        user_tasklist = persistence.TASKLIST[chat_id]["pending_tasks"]
         if task in user_tasklist:
-            await context.bot.send_message(chat_id=chat_id, text=f"{task} ya existe como tarea")
+            await context.bot.send_message(chat_id=chat_id, text=f"{task} ya existe como tarea pendiente")
 
         else:
-            persistence.TASKLIST[chat_id].append(task)
-            await context.bot.send_message(chat_id=chat_id, text=f"{task} añadido como tarea")
+            persistence.TASKLIST[chat_id]["pending_tasks"].append(task)
+            await context.bot.send_message(chat_id=chat_id, text=f"{task} añadido como tarea pendiente")
     
     else:
        await context.bot.send_message(chat_id=chat_id, text="Usa el comando /start primero")
@@ -56,14 +56,14 @@ async def delete_task(update:Update, context):
         await context.bot.send_message(chat_id=chat_id, text=f"Usa el comando /start primero")
 
 
-async def show_tasks(update:Update, context):
+async def show_pending_tasks(update:Update, context):
 
     chat_id = update.effective_chat.id
 
     if chat_id in persistence.TASKLIST:
-        await context.bot.send_message(chat_id=chat_id, text=f"Tienes las siguientes tareas: ")
+        await context.bot.send_message(chat_id=chat_id, text=f"Tienes las siguientes tareas pendientes: ")
         
-        for task in persistence.TASKLIST[chat_id]:
+        for task in persistence.TASKLIST[chat_id]["pending_tasks"]:
             await context.bot.send_message(chat_id=chat_id, text=f"{task}")
     
     else:
