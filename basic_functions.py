@@ -55,4 +55,11 @@ async def start(update:Update, context):
 
 async def help(update:Update, context):
     chat_id= update.effective_chat.id
-    await context.bot.send_message(chat_id=chat_id, text=f"Aqui tienes una lista de comandos disponibles: \n /start -> Inicializa el bot \n /help -> Muestra una lista de comandos del bot \n /addtask (nombre de tarea)-> añade una tarea a la lista de tareas")
+    await context.bot.send_message(chat_id=chat_id,
+    text=f"<b>Aquí tienes una lista de comandos disponibles:</b>\n\n"
+        f"• <b>/start</b> ➡️ Inicializa el bot\n\n" 
+        f"• <b>/help</b> ➡️ Muestra una lista de comandos del bot\n\n"
+        f"• <b>/addtask (nombre de tarea)</b> ➡️ añade una tarea a la lista de tareas\n\n"
+        f"• <b>/showtasks</b> ➡️ Muestra la lista de tareas pendientes\n\n"
+        f"• <b>/deltask</b> ➡️ Permite seleccionar una tarea a eliminar de la lista de tareas pendientes\n\n", 
+    parse_mode = "HTML")

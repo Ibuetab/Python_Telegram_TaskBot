@@ -41,16 +41,28 @@ async def show_pending_tasks(update:Update, context):
     chat_id = update.effective_chat.id
 
     if chat_id in persistence.TASKLIST:
-        await context.bot.send_message(chat_id=chat_id, text=f"Tienes las siguientes tareas pendientes: ")
+        tasks = persistence.TASKLIST[chat_id]["pending_tasks"]
+
+
+        mensaje = f"Tienes las siguientes tareas pendientes: \n\n"
+
+        if not tasks:
+            await update.message.reply_text(text=f"No hay tareas para mostrar", parse_mode="MarkdownV2")
+            return
         
-        for task in persistence.TASKLIST[chat_id]["pending_tasks"]:
-            await context.bot.send_message(chat_id=chat_id, text=f"{task}")
+        else:
+            for task in tasks:
+                mensaje += f"• {task}\n"
+        
+        await update.message.reply_text(mensaje, parse_mode="MarkdownV2")
+            
     
     else:
         await context.bot.send_message(chat_id=chat_id, text=f"Usa el comando /start primero")
 
 
-
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 
 OPTION = range(1)
 
@@ -121,3 +133,7 @@ async def delete_button(update:Update, context:CallbackContext):
 async def cancel(update: Update, context: CallbackContext) -> int:
     await update.message.reply_text("Operacion cancelada.")
     return ConversationHandler.END
+
+
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
