@@ -20,21 +20,22 @@ async def add_task(update:Update, context):
         await context.bot.send_message(chat_id=chat_id, text=f"Debes escribir el comando y el nombre de la tarea")
         return
 
-    task = " ".join(context.args)
+    task = " ".join(context.args).lower()
 
     if chat_id in persistence.TASKLIST:
 
         user_tasklist = persistence.TASKLIST[chat_id]["pending_tasks"]
         if task in user_tasklist:
-            await context.bot.send_message(chat_id=chat_id, text=f"{task} ya existe como tarea pendiente")
+            await context.bot.send_message(chat_id=chat_id, text=f"{task.capitalize()} ya existe como tarea pendiente")
 
         else:
             persistence.TASKLIST[chat_id]["pending_tasks"].append(task)
-            await context.bot.send_message(chat_id=chat_id, text=f"{task} añadido como tarea pendiente")
+            await context.bot.send_message(chat_id=chat_id, text=f"{task.capitalize()} añadido como tarea pendiente")
     
     else:
        await context.bot.send_message(chat_id=chat_id, text="Usa el comando /start primero")
 
+#---------------------------------------------------------------------------------------------------
 
 async def show_pending_tasks(update:Update, context):
 
@@ -52,7 +53,7 @@ async def show_pending_tasks(update:Update, context):
         
         else:
             for task in tasks:
-                mensaje += f"• {task}\n"
+                mensaje += f"• {task.capitalize()}\n"
         
         await update.message.reply_text(mensaje, parse_mode="MarkdownV2")
             
@@ -80,7 +81,7 @@ async def delete_task(update:Update, context:CallbackContext):
         
         #Create a row for each task
         for index,task in enumerate(user_tasklist):
-                keyboard.append([InlineKeyboardButton(f"{task}", callback_data=task)])
+                keyboard.append([InlineKeyboardButton(f"{task.capitalize()}", callback_data=task)])
 
         
         keyboard.append([InlineKeyboardButton("Cancelar", callback_data="CANCEL_DELETE")])
@@ -117,7 +118,7 @@ async def delete_button(update:Update, context:CallbackContext):
 
         keyboard = []
         for task in user_tasklist:
-            keyboard.append([InlineKeyboardButton(f"{task}", callback_data=task)])
+            keyboard.append([InlineKeyboardButton(f"{task.capitalize()}", callback_data=task)])
         
     keyboard.append([InlineKeyboardButton("Terminar Eliminación", callback_data="CANCEL_DELETE")])
     reply_markup = InlineKeyboardMarkup(keyboard)
