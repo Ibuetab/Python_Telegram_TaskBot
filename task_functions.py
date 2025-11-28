@@ -65,7 +65,7 @@ async def show_pending_tasks(update:Update, context):
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 
-OPTION = range(1)
+DELETE = range(1)
 
 async def delete_task(update:Update, context:CallbackContext):
 
@@ -88,7 +88,7 @@ async def delete_task(update:Update, context:CallbackContext):
         reply_markup = InlineKeyboardMarkup(keyboard)
                 
         await update.message.reply_text(text=f"Tienes las siguientes tareas pendientes, ¿Cual quieres borrar?:", reply_markup=reply_markup)
-        return OPTION
+        return DELETE
 
     
 
@@ -128,13 +128,82 @@ async def delete_button(update:Update, context:CallbackContext):
         reply_markup=reply_markup
     )
 
-    return OPTION
+    return DELETE
 
+
+
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+
+COMPLETE = range(1)
+
+async def complete_task(update:Update, context:CallbackContext):
+
+    chat_id = update.effective_chat.id
+
+    if chat_id not in persistence.TASKLIST or not persistence.TASKLIST[chat_id].get("pending_tasks"):
+        await update.message.reply_text("¡No tienes tareas pendientes para completar!")
+        return ConversationHandler.END 
+
+    else:
+        user_tasklist = persistence.TASKLIST[chat_id]["pending_tasks"]
+        keyboard = []
+        
+        #Create a row for each task
+        for index,task in enumerate(user_tasklist):
+                keyboard.append([InlineKeyboardButton(f"{task.capitalize()}", callback_data=task)])
+
+        
+        keyboard.append([InlineKeyboardButton("Cancelar", callback_data="CANCEL_DELETE")])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+                
+        await update.message.reply_text(text=f"Selecciona las tareas que quieres marcar como completadas:", reply_markup=reply_markup)
+        return COMPLETE
+    
+
+async def complete_button(update:Update, context:CallbackContext):
+    chat_id = update.effective_chat.id
+    query = update.callback_query
+    await query.answer()
+
+    data = query.data
+
+    user_tasklist = persistence.TASKLIST[chat_id]["pending_tasks"]
+    user_completed_tasks = persistence.TASKLIST[chat_id]["completed_tasks"]
+    
+
+    if chat_id in persistence.TASKLIST:
+
+        if data == "CANCEL_DELETE":
+            await query.edit_message_text("Operación cancelada.")
+            return ConversationHandler.END
+
+        if data in user_tasklist:
+            user_tasklist.remove(data)
+            user_completed_tasks.append(data)
+
+        if not user_tasklist:
+            await query.edit_message_text("✅ Ya no quedan tareas pendientes para completar")
+            return ConversationHandler.END
+
+        keyboard = []
+        for task in user_tasklist:
+            keyboard.append([InlineKeyboardButton(f"{task.capitalize()}", callback_data=task)])
+        
+    keyboard.append([InlineKeyboardButton("Terminar", callback_data="CANCEL_DELETE")])
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await query.edit_message_text(
+        "Tarea marcada como completada. Toca otra para seguir completando tareas o finaliza la operación:",
+        reply_markup=reply_markup
+    )
+
+    return COMPLETE
+
+
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 
 async def cancel(update: Update, context: CallbackContext) -> int:
     await update.message.reply_text("Operacion cancelada.")
     return ConversationHandler.END
-
-
-#---------------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------------------------

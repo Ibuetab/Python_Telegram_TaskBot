@@ -8,7 +8,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler
 #---------------------------------------------------------------------------------------------------
 import persistence
 from basic_functions import start, help
-from task_functions import add_task, show_pending_tasks, delete_task, delete_button, OPTION, cancel
+from task_functions import add_task, show_pending_tasks, delete_task, delete_button, DELETE, cancel, complete_task, complete_button, COMPLETE
 
 
 #BOT TOKEN
@@ -44,12 +44,22 @@ def main():
     del_conv_handler = ConversationHandler(
         entry_points=[CommandHandler("deltask", delete_task)],
         states = {
-            OPTION: [CallbackQueryHandler(delete_button)]
+            DELETE: [CallbackQueryHandler(delete_button)]
         },
         fallbacks=[CommandHandler("cancel", cancel)],
         per_message=False)
     
+    complete_task_handler = ConversationHandler(
+        entry_points=[CommandHandler("comtask", complete_task)],
+        states = {
+            COMPLETE: [CallbackQueryHandler(complete_button)]
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False)
+    
+    
     app.add_handler(del_conv_handler)
+    app.add_handler(complete_task_handler)
    
    #---------------------------------------------------------------------------------------------------
     app.run_polling()
