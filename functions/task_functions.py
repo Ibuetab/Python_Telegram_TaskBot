@@ -5,7 +5,7 @@ from telegram.ext import CallbackContext, ConversationHandler
 #LOCAL IMPORTS
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
-import persistence
+import data.persistence as persistence
 
 
 #TASK FUNCTIONS

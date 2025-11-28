@@ -5,8 +5,8 @@ from telegram import Update
 #LOCAL IMPORTS
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
-import persistence
-from time_zone import ZONE, time
+import data.persistence as persistence
+from data.time_zone import ZONE, time
 
 
 

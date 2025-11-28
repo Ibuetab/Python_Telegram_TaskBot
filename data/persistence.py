@@ -6,10 +6,10 @@ import atexit
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 
-USERS_DATA_FILE = "users_data.json"
+USERS_DATA_FILE = "json/users_data.json"
 REGISTERED_USERS = {} #User data store on a dictionary
 
-USERS_TASK_LIST = "task_list.json"
+USERS_TASK_LIST = "json/task_list.json"
 TASKLIST = {} #users tasklist stored on a dictionary
 
 

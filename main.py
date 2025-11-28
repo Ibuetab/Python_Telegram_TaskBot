@@ -6,9 +6,10 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler
 #LOCAL IMPORTS
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
-import persistence
-from basic_functions import start, help
-from task_functions import add_task, show_pending_tasks, delete_task, delete_button, DELETE, cancel, complete_task, complete_button, COMPLETE
+import data.persistence as persistence
+from functions.basic_functions import start, help
+from functions.task_functions import DELETE, COMPLETE
+from functions.task_functions import add_task, show_pending_tasks, delete_task, delete_button, cancel, complete_task, complete_button
 
 
 #BOT TOKEN
@@ -40,7 +41,10 @@ def main():
     app.add_handler(CommandHandler("addtask", add_task))
     app.add_handler(CommandHandler("showtasks", show_pending_tasks))
 
-    #app.add_handler(CommandHandler("deltask", delete_task))
+
+
+    #Conversation Handlers
+    #---------------------------------------------------------------------------------------------------
     del_conv_handler = ConversationHandler(
         entry_points=[CommandHandler("deltask", delete_task)],
         states = {
