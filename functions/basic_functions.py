@@ -37,6 +37,13 @@ async def start(update:Update, context):
             "pending_tasks": [],
             "completed_tasks": []
         }
+
+        persistence.REMINDERS[chat_id] = {
+            "reminder_name": [],
+            "reminder_days": [],
+            "reminder_hour": [],
+            "reminder_minute": []
+        }
    
         if username:
             await context.bot.send_message(chat_id = chat_id, text=f"Hola, usuario @{username}, utiliza el comando /help para ver una lista de comandos disponibles")

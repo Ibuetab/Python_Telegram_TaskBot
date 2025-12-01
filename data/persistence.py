@@ -12,6 +12,11 @@ REGISTERED_USERS = {} #User data store on a dictionary
 USERS_TASK_LIST = "json/task_list.json"
 TASKLIST = {} #users tasklist stored on a dictionary
 
+USERS_REMINDERS_FILE = "json/reminders.json"
+REMINDERS = {}
+
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 
 def load_users():
     global REGISTERED_USERS
@@ -47,8 +52,6 @@ def save_users():
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 
-
-
 def load_tasklist():
     global TASKLIST
     if os.path.exists(USERS_TASK_LIST):
@@ -68,6 +71,7 @@ def load_tasklist():
         except json.JSONDecodeError:
             print(f"Error al cargar las tareas")
 
+
 def save_tasklist():
     global TASKLIST
     try:
@@ -78,11 +82,44 @@ def save_tasklist():
     except Exception as e:
         print(f"Error al guardar las tareas {e}")
 
+#REGISTERES USERS' REMINDERS
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
+def load_reminders():
+    global REMINDERS
 
+    if os.path.exists:
+        try:
+            with open(USERS_REMINDERS_FILE, "r") as f:
+                content = f.read().strip()
+                if not content:
+                    print(f"DEBUG: {USERS_REMINDERS_FILE} está vacío.")
+                    return
+                
+                data_from_json = json.loads(content)
+                REMINDERS= {int(k): v for k, v in data_from_json.items()}
+                print(f"Recordatorios cargados de {len(REMINDERS)} usuarios")
+        except json.JSONDecodeError:
+            print(f"Error al cargar los recordatorios")
+
+def save_reminders():
+    global REMINDERS
+    
+    try:
+        with open(USERS_REMINDERS_FILE, "w") as f:
+            json.dump(REMINDERS,f, indent=4)
+            print(f"Recordarios guardados de len({REMINDERS} usuarios)")
+
+    except Exception as e:
+        print(f"Error al guardar los recordatorios {e}")
+#---------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------
 
 def load_data():
     load_users()
     load_tasklist()
+    load_reminders()
 
 atexit.register(save_users)
 atexit.register(save_tasklist)
+atexit.register(save_reminders)
