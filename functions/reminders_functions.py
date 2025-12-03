@@ -30,8 +30,7 @@ async def get_reminder_name(update:Update, context: CallbackContext):
     context.user_data["temp"] = {"name": reminder_name}
 
     
-    await update.message.reply_text(f"Nombre de recordatorio guardado como {reminder_name.capitalize()} \n"
-                                        f"Selecciona los días que quieres establecer para el recordatorio")
+    await update.message.reply_text(f"Nombre de recordatorio guardado como {reminder_name.capitalize()}")
         
     return DAY
 
@@ -55,4 +54,7 @@ async def get_day_frequency(update:Update, context:CallbackContext):
 
 
     reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text(text=f"Selecciona los días que quieres establecer para el recordatorio",reply_markup=reply_markup)
     return DAY
+
