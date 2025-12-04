@@ -117,7 +117,27 @@ async def get_day_frequency_buttons(update:Update, context:CallbackContext):
             return DAY
             
         
-        await query.edit_message_text(f"Días guardados: {', '.join(selected_days)}")
+        await query.edit_message_text(f"Días guardados: {', '.join(selected_days)}"
+                                      f"Escribe la hora (Sin los minutos) a la que quieras recibir el recordatorio (En formato 24h)")
         return HOUR 
     
     return DAY
+
+
+async def get_hour(update:Update, context:CallbackContext):
+
+    hour = update.message.text.strip()
+    #hour = int(reminder_hour)
+
+    if len(hour) > 2 or hour.isnumeric() == False or hour > 23:
+        await update.message.reply_text(f"Escribe solo la hora sin los minutos")
+        return HOUR
+
+    else:
+
+        formatted_hour = f"{hour:02d}"
+        context.user_data.setdefault("temp", {})["hour"] = formatted_hour
+
+        await update.message.reply_text(f"Hora guardada como {formatted_hour}"
+                                    f"Escribe los minutos (Por defecto es 00)")
+        return MINUTE
