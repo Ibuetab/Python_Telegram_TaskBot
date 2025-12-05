@@ -141,3 +141,26 @@ async def get_hour(update:Update, context:CallbackContext):
         await update.message.reply_text(f"Hora guardada como {formatted_hour}"
                                     f"Escribe los minutos (Por defecto es 00)")
         return MINUTE
+
+
+async def get_minute(update:Update, context:CallbackContext):
+    reminder_minute = update.message.text.strip()
+
+    try:
+        minute = int(reminder_minute)
+        if not 0<= minute <= 59:
+            raise ValueError("Minuto fuera de rango")
+            
+    except ValueError:
+        await update.message.reply_text(f"Introduce un numero entre 0 y 59")
+        return MINUTE
+
+    formatted_minute = f"{minute:02d}"
+    context.user_data.setdefault("temp", {})["minute"] = formatted_minute
+
+    await update.message.reply_text(
+        f"Minuto guardado como *{formatted_minute}*.\n",
+        parse_mode="MarkdownV2"
+    )
+    
+    return ConversationHandler.END
