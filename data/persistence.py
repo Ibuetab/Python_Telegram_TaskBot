@@ -102,13 +102,20 @@ def load_reminders():
         except json.JSONDecodeError:
             print(f"Error al cargar los recordatorios")
 
-def save_reminders():
+def save_reminders(chat_id, datos_finales):
     global REMINDERS
+
+    str_chat_id = str(chat_id)
+
+    if str_chat_id not in REMINDERS:
+        REMINDERS[str_chat_id] = {"reminders" : []}
     
+    REMINDERS[str_chat_id]["reminders"].append(datos_finales)
+
     try:
         with open(USERS_REMINDERS_FILE, "w") as f:
             json.dump(REMINDERS,f, indent=4)
-            print(f"Recordarios guardados de len({REMINDERS} usuarios)")
+            print(f"Recordarios guardados del usuario {str_chat_id})")
 
     except Exception as e:
         print(f"Error al guardar los recordatorios {e}")
