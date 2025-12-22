@@ -11,7 +11,7 @@ from functions.basic_functions import start, help
 from functions.task_functions import DELETE, COMPLETE
 from functions.task_functions import add_task, show_pending_tasks, delete_task, delete_button, cancel, complete_task, complete_button
 from functions.reminders_functions import NAME,DAY,HOUR,MINUTE
-from functions.reminders_functions import reminder_name, get_reminder_name, get_day_frequency_buttons
+from functions.reminders_functions import reminder_name, get_reminder_name, get_day_frequency_buttons, get_hour
 
 #BOT TOKEN
 #---------------------------------------------------------------------------------------------------
@@ -67,7 +67,8 @@ def main():
         entry_points=[CommandHandler("reminder", reminder_name)],
         states={
             NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_reminder_name)],
-            DAY: [CallbackQueryHandler(get_day_frequency_buttons)]
+            DAY: [CallbackQueryHandler(get_day_frequency_buttons)],
+            HOUR: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_hour)]
         },
         fallbacks=[CommandHandler("cancel", cancel)],
         per_message=False)

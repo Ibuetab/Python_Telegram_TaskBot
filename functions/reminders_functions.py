@@ -127,20 +127,24 @@ async def get_day_frequency_buttons(update:Update, context:CallbackContext):
 async def get_hour(update:Update, context:CallbackContext):
 
     hour = update.message.text.strip()
-    #hour = int(reminder_hour)
+    
 
-    if len(hour) > 2 or hour.isnumeric() == False or hour > 23:
+    if len(hour) > 2 or not hour.isnumeric():
         await update.message.reply_text(f"Escribe solo la hora sin los minutos")
         return HOUR
 
-    else:
+    hour_int = int(hour)
 
-        formatted_hour = f"{hour:02d}"
-        context.user_data.setdefault("temp", {})["hour"] = formatted_hour
+    if hour_int < 0 or hour_int > 23:
+        await update.message.reply_text(f"Escribe un numero ente 0 y 23 (Ambos inclusive)")
+        return HOUR
 
-        await update.message.reply_text(f"Hora guardada como {formatted_hour}"
+    formatted_hour = f"{hour_int:02d}"
+    context.user_data.setdefault("temp", {})["hour"] = formatted_hour
+
+    await update.message.reply_text(f"Hora guardada como {formatted_hour} \n"
                                     f"Escribe los minutos (Por defecto es 00)")
-        return MINUTE
+    return MINUTE
 
 
 async def get_minute(update:Update, context:CallbackContext):
