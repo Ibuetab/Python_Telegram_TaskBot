@@ -163,8 +163,23 @@ async def get_minute(update:Update, context:CallbackContext):
     context.user_data.setdefault("temp", {})["minute"] = formatted_minute
 
     await update.message.reply_text(
-        f"Minuto guardado como *{formatted_minute}*.\n",
+        f"Minuto guardado como {formatted_minute} \n",
         parse_mode="MarkdownV2"
     )
     
+    return await save_and_finish(update, context)
+
+
+
+async def save_and_finish(update:Update, context: CallbackContext):
+    chat_id = update.effective_chat.id
+
+    datos_finales = context.user_data.get("temp")
+
+    #persistence.save_reminders(chat_id, datos_finales)
+
+    await update.message.reply_text(f"Recordatorio guardado como {datos_finales['name']} \n"
+                             f"Los días {datos_finales['selected_days']} \n"
+                             f"A la hora {datos_finales['hour']} : {datos_finales['minute']}")
+
     return ConversationHandler.END
