@@ -35,7 +35,6 @@ async def get_reminder_name(update:Update, context: CallbackContext):
     await update.message.reply_text(f"Nombre de recordatorio guardado como {reminder_name.capitalize()} \n"
                                     f"Selecciona los días que quieres establecer para el recordatorio",
                                     reply_markup=reply_markup)
-    
 
     return DAY
 
@@ -117,7 +116,7 @@ async def get_day_frequency_buttons(update:Update, context:CallbackContext):
             return DAY
             
         
-        await query.edit_message_text(f"Días guardados: {', '.join(selected_days)}"
+        await query.edit_message_text(f"Días guardados: {', '.join(selected_days)} \n \n"
                                       f"Escribe la hora (Sin los minutos) a la que quieras recibir el recordatorio (En formato 24h)")
         return HOUR 
     
@@ -176,10 +175,12 @@ async def save_and_finish(update:Update, context: CallbackContext):
 
     datos_finales = context.user_data.get("temp")
 
-    #persistence.save_reminders(chat_id, datos_finales)
+    persistence.save_reminders(chat_id, datos_finales)
 
     await update.message.reply_text(f"Recordatorio guardado como {datos_finales['name']} \n"
                              f"Los días {datos_finales['selected_days']} \n"
                              f"A la hora {datos_finales['hour']} : {datos_finales['minute']}")
+    
+    context.user_data.pop("temp", None)
 
     return ConversationHandler.END

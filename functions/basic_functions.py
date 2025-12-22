@@ -39,12 +39,7 @@ async def start(update:Update, context):
         }
 
         persistence.REMINDERS[chat_id] = {
-            "reminders": {
-                "reminder_name": [],
-                "reminder_days": [],
-                "reminder_hour": [],
-                "reminder_minute": []
-            }
+            "reminders": {}
                 
         }
    
