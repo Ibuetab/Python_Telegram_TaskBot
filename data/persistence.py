@@ -88,19 +88,14 @@ def save_tasklist():
 def load_reminders():
     global REMINDERS
 
-    if os.path.exists:
+    if os.path.exists(USERS_REMINDERS_FILE):
         try:
             with open(USERS_REMINDERS_FILE, "r") as f:
-                content = f.read().strip()
-                if not content:
-                    print(f"DEBUG: {USERS_REMINDERS_FILE} está vacío.")
-                    return
-                
-                data_from_json = json.loads(content)
-                REMINDERS= {int(k): v for k, v in data_from_json.items()}
+                REMINDERS= json.load(f)
                 print(f"Recordatorios cargados de {len(REMINDERS)} usuarios")
         except json.JSONDecodeError:
             print(f"Error al cargar los recordatorios")
+            REMINDERS = {}
 
 def save_reminders(chat_id, datos_finales):
     global REMINDERS

@@ -7,6 +7,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 import data.persistence as persistence
+from data.time_zone import ZONE, DIAS
 from functions.basic_functions import start, help
 from functions.task_functions import DELETE, COMPLETE
 from functions.task_functions import add_task, show_pending_tasks, delete_task, delete_button, cancel, complete_task, complete_button

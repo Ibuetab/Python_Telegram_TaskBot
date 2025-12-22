@@ -3,6 +3,7 @@ from telegram.ext import CallbackContext, ConversationHandler
 
 
 import data.persistence as persistence
+from data.time_zone import ZONE,DIAS
 
 
 
@@ -174,6 +175,8 @@ async def save_and_finish(update:Update, context: CallbackContext):
     chat_id = update.effective_chat.id
 
     datos_finales = context.user_data.get("temp")
+
+    dias_numeros = tuple(DIAS[d] for d in datos_finales['selected_days'])
 
     persistence.save_reminders(chat_id, datos_finales)
 
