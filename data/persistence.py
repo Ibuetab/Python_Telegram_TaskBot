@@ -97,7 +97,7 @@ def load_reminders():
             print(f"Error al cargar los recordatorios")
             REMINDERS = {}
 
-def save_reminders(chat_id, datos_finales):
+def save_reminders(chat_id, datos_json):
     global REMINDERS
 
     str_chat_id = str(chat_id)
@@ -105,7 +105,7 @@ def save_reminders(chat_id, datos_finales):
     if str_chat_id not in REMINDERS:
         REMINDERS[str_chat_id] = {"reminders" : []}
     
-    REMINDERS[str_chat_id]["reminders"].append(datos_finales)
+    REMINDERS[str_chat_id]["reminders"].append(datos_json)
 
     try:
         with open(USERS_REMINDERS_FILE, "w") as f:

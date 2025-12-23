@@ -100,6 +100,8 @@ async def get_day_frequency_buttons(update:Update, context:CallbackContext):
             selected_days.remove(data)
         else:
             selected_days.append(data)
+
+       
         
         context.user_data["temp"]["selected_days"] = selected_days
 
@@ -176,14 +178,24 @@ async def save_and_finish(update:Update, context: CallbackContext):
 
     datos_finales = context.user_data.get("temp")
 
-    dias_numeros = tuple(DIAS[d] for d in datos_finales['selected_days'])
+    dias_numeros = tuple(DIAS[d] for d in datos_finales["selected_days"])
 
-    persistence.save_reminders(chat_id, datos_finales)
+    datos_json = [datos_finales["name"],
+                  dias_numeros,
+                  datos_finales["hour"],
+                  datos_finales["minute"]]
+
+    persistence.save_reminders(chat_id, datos_json)
 
     await update.message.reply_text(f"Recordatorio guardado como {datos_finales['name']} \n"
                              f"Los días {datos_finales['selected_days']} \n"
                              f"A la hora {datos_finales['hour']} : {datos_finales['minute']}")
     
+
+
+
+    
     context.user_data.pop("temp", None)
+
 
     return ConversationHandler.END
