@@ -181,18 +181,14 @@ async def save_and_finish(update:Update, context: CallbackContext):
 
     dias_numeros = tuple(DIAS[d] for d in datos_finales["selected_days"])
 
-    datos_json = [datos_finales["name"],
-                  dias_numeros,
-                  datos_finales["hour"],
-                  datos_finales["minute"]]
 
-    persistence.save_reminders(chat_id, datos_json)
+    persistence.save_reminders(chat_id, datos_finales)
 
     await update.message.reply_text(f"Recordatorio guardado como {datos_finales['name']} \n"
                              f"Los días {datos_finales['selected_days']} \n"
                              f"A la hora {datos_finales['hour']} : {datos_finales['minute']}")
     
-    context.user_data.pop("temp", None)
+    
 
     context.job_queue.run_daily(
         callback=nombre_alarma,
@@ -202,11 +198,11 @@ async def save_and_finish(update:Update, context: CallbackContext):
         data=datos_finales['name']
     )
 
-
+    context.user_data.pop("temp", None)
     return ConversationHandler.END
 
 
-async def nombre_alarma(update:Update, context:CallbackContext):
+async def nombre_alarma(context:CallbackContext):
     job = context.job
     chat_id = str(job.chat_id)
     nombre_job = job.data 
