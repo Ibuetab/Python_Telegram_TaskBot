@@ -6,10 +6,6 @@ import data.persistence as persistence
 from data.time_zone import ZONE,DIAS
 
 
-
-
-
-
 NAME,DAY,HOUR,MINUTE = range(4)
 
 
@@ -26,6 +22,7 @@ async def reminder_name(update:Update, context: CallbackContext):
     else:
         await update.message.reply_text(f"Escribe un nombre para el recordatorio")
         return NAME
+    
 
 #Función que obtiene el nombre del recordatorio, lo almacena temporalmente, y pasa al siguiente estado
 async def get_reminder_name(update:Update, context: CallbackContext):
@@ -39,11 +36,13 @@ async def get_reminder_name(update:Update, context: CallbackContext):
 
     await update.message.reply_text(f"Nombre de recordatorio guardado como {reminder_name.capitalize()} \n"
                                     f"Selecciona los días que quieres establecer para el recordatorio",
-                                    reply_markup=reply_markup)
+                                    reply_markup=reply_markup) #Siguiente estado
 
     return DAY
 
 
+
+#SELECCIONAR LOS DÍAS
 #------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------------
@@ -137,6 +136,8 @@ async def get_day_frequency_buttons(update:Update, context:CallbackContext):
 #------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
 async def get_hour(update:Update, context:CallbackContext):
 
