@@ -9,6 +9,11 @@ time = datetime.time(hour=0, minute= 0, second=0, tzinfo=ZONE)
 
 
 DIAS = {
-    "LU": 0, "MA": 1, "MI": 2, "JU": 3, 
-    "VI": 4, "SA": 5, "DO": 6
+    "LU": 1, 
+    "MA": 2, 
+    "MI": 3, 
+    "JU": 4, 
+    "VI": 5, 
+    "SA": 6, 
+    "DO": 0
 }

@@ -180,7 +180,7 @@ async def save_and_finish(update:Update, context: CallbackContext):
     datos_finales = context.user_data.get("temp")
 
     dias_numeros = tuple(DIAS[d] for d in datos_finales["selected_days"])
-
+    dias_para_bot = tuple(DIAS[d] for d in datos_finales["selected_days"])
 
     persistence.save_reminders(chat_id, datos_finales)
 
@@ -196,28 +196,27 @@ async def save_and_finish(update:Update, context: CallbackContext):
     print(f"DEBUG: Hora: {datos_finales['hour']}:{datos_finales['minute']}")
     print(f"DEBUG: Días (tupla de ints): {dias_numeros}")
     print(f"DEBUG: Hoy es día número {ahora.weekday()} (0=Lunes, 1=Martes...)")
+    print(f"Reloj Sistema: {datetime.datetime.now()}")
+    print(f"Reloj Madrid:  {datetime.datetime.now(ZONE)}")
 
-    # 1. Obtenemos la hora actual en Madrid
-    ahora = datetime.now(ZONE)
-    
-    # 2. Creamos el objeto time con segundos a 0
-    hora_alarma = datetime.time(
-        hour=int(datos_finales['hour']), 
-        minute=int(datos_finales['minute']), 
-        second=0, 
-        tzinfo=ZONE
-    )
-
-    # 3. PROGRAMACIÓN
-    context.job_queue.run_daily(
-        callback=nombre_alarma,
-        time=hora_alarma,
-        days=dias_numeros,
-        chat_id=int(chat_id),
-        data=datos_finales['name'],
-        # ESTO ES LA CLAVE: Le decimos que empiece a contar desde YA
-        start_date=ahora 
-    )
+    try:
+        nuevo_job = context.job_queue.run_daily(
+            callback=nombre_alarma,
+            time=datetime.time(
+                hour=int(datos_finales['hour']), 
+                minute=int(datos_finales['minute']), 
+                tzinfo=ZONE
+            ),
+            days=dias_para_bot,
+            chat_id=int(chat_id),
+            data=datos_finales['name']
+        )
+        if nuevo_job:
+            print(f"✅ Job creado con éxito. Próxima ejecución: {nuevo_job.next_t}")
+        else:
+            print("❌ El Job no se pudo crear.")
+    except Exception as e:
+        print(f"❌ Error crítico al programar run_daily: {e}")
 
     context.user_data.pop("temp", None)
     return ConversationHandler.END
@@ -227,14 +226,6 @@ async def nombre_alarma(context:CallbackContext):
     job = context.job
     chat_id = str(job.chat_id)
     nombre_job = job.data 
-    
-    
-    from data.persistence import REMINDERS
-    
-    usuario_data = REMINDERS.get(chat_id, [])
-    
-    
-
     
     await context.bot.send_message(chat_id, f"⏰ Recordatorio: {nombre_job}")
     
