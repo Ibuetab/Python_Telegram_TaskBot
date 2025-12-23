@@ -12,6 +12,11 @@ from data.time_zone import ZONE,DIAS
 
 NAME,DAY,HOUR,MINUTE = range(4)
 
+
+#------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Función auxiliar que responde al comando /reminder para preguntar el nombre del recordatorio
 async def reminder_name(update:Update, context: CallbackContext):
     chat_id = update.effective_chat.id
 
@@ -22,18 +27,16 @@ async def reminder_name(update:Update, context: CallbackContext):
         await update.message.reply_text(f"Escribe un nombre para el recordatorio")
         return NAME
 
-
+#Función que obtiene el nombre del recordatorio, lo almacena temporalmente, y pasa al siguiente estado
 async def get_reminder_name(update:Update, context: CallbackContext):
-    chat_id = update.effective_chat.id
 
     reminder_name_raw = update.message.text
     reminder_name = reminder_name_raw.lower()
 
     context.user_data["temp"] = {"name": reminder_name}
 
-    reply_markup = get_day_frequency()
+    reply_markup = get_day_frequency() #Muestra los botones de los días, definidos en la función get_day_frequency depués de obtener el nombre del recordatorio
 
-    
     await update.message.reply_text(f"Nombre de recordatorio guardado como {reminder_name.capitalize()} \n"
                                     f"Selecciona los días que quieres establecer para el recordatorio",
                                     reply_markup=reply_markup)
@@ -41,7 +44,11 @@ async def get_reminder_name(update:Update, context: CallbackContext):
     return DAY
 
 
-#Solo muestra los botones
+#------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------
+
+#Función que solo muestra los botones
 def get_day_frequency():
     
     keyboard = [
@@ -57,8 +64,9 @@ def get_day_frequency():
     ]
     return InlineKeyboardMarkup(keyboard)
 
+#------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+#Función auxiliar que muestra con un tic verde los días seleccionados
 def auxiliar_day_function(selected_days: list) -> InlineKeyboardMarkup:
 
     DAYS = {"LU": "Lunes", "MA": "Martes", "MI": "Miércoles", 
@@ -82,8 +90,9 @@ def auxiliar_day_function(selected_days: list) -> InlineKeyboardMarkup:
     
     return InlineKeyboardMarkup(keyboard)
 
+#------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+#Función que selecciona los días y los almacena temporalmente, posteriormente pasa al siguiente estado para pedir la hora
 async def get_day_frequency_buttons(update:Update, context:CallbackContext):
     query = update.callback_query
     await query.answer()
@@ -101,8 +110,6 @@ async def get_day_frequency_buttons(update:Update, context:CallbackContext):
             selected_days.remove(data)
         else:
             selected_days.append(data)
-
-       
         
         context.user_data["temp"]["selected_days"] = selected_days
 
@@ -126,6 +133,10 @@ async def get_day_frequency_buttons(update:Update, context:CallbackContext):
     
     return DAY
 
+
+#------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------------------------------------------------------
 
 async def get_hour(update:Update, context:CallbackContext):
 
