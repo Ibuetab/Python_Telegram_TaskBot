@@ -190,12 +190,33 @@ async def save_and_finish(update:Update, context: CallbackContext):
     
     
 
+
+    ahora = datetime.datetime.now(ZONE)
+    print(f"DEBUG: Configurando run_daily")
+    print(f"DEBUG: Hora: {datos_finales['hour']}:{datos_finales['minute']}")
+    print(f"DEBUG: Días (tupla de ints): {dias_numeros}")
+    print(f"DEBUG: Hoy es día número {ahora.weekday()} (0=Lunes, 1=Martes...)")
+
+    # 1. Obtenemos la hora actual en Madrid
+    ahora = datetime.now(ZONE)
+    
+    # 2. Creamos el objeto time con segundos a 0
+    hora_alarma = datetime.time(
+        hour=int(datos_finales['hour']), 
+        minute=int(datos_finales['minute']), 
+        second=0, 
+        tzinfo=ZONE
+    )
+
+    # 3. PROGRAMACIÓN
     context.job_queue.run_daily(
         callback=nombre_alarma,
-        time=datetime.time(hour=int(datos_finales['hour']), minute=int(datos_finales['minute']), tzinfo=ZONE),
+        time=hora_alarma,
         days=dias_numeros,
-        chat_id=update.effective_chat.id,
-        data=datos_finales['name']
+        chat_id=int(chat_id),
+        data=datos_finales['name'],
+        # ESTO ES LA CLAVE: Le decimos que empiece a contar desde YA
+        start_date=ahora 
     )
 
     context.user_data.pop("temp", None)
@@ -208,14 +229,12 @@ async def nombre_alarma(context:CallbackContext):
     nombre_job = job.data 
     
     
-    from persistence import REMINDERS
+    from data.persistence import REMINDERS
     
     usuario_data = REMINDERS.get(chat_id, [])
     
-    existe = any(r['name'] == nombre_job for r in usuario_data)
+    
 
-    if existe:
-        await context.bot.send_message(chat_id, f"⏰ Recordatorio: {nombre_job}")
-    else:
-        
-        job.schedule_removal()
+    
+    await context.bot.send_message(chat_id, f"⏰ Recordatorio: {nombre_job}")
+    
