@@ -1,9 +1,10 @@
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext, ConversationHandler
-
+import datetime
 
 import data.persistence as persistence
 from data.time_zone import ZONE,DIAS
+
 
 
 
@@ -191,11 +192,34 @@ async def save_and_finish(update:Update, context: CallbackContext):
                              f"Los días {datos_finales['selected_days']} \n"
                              f"A la hora {datos_finales['hour']} : {datos_finales['minute']}")
     
-
-
-
-    
     context.user_data.pop("temp", None)
+
+    context.job_queue.run_daily(
+        callback=nombre_alarma,
+        time=datetime.time(hour=int(datos_finales['hour']), minute=int(datos_finales['minute']), tzinfo=ZONE),
+        days=dias_numeros,
+        chat_id=update.effective_chat.id,
+        data=datos_finales['name']
+    )
 
 
     return ConversationHandler.END
+
+
+async def nombre_alarma(update:Update, context:CallbackContext):
+    job = context.job
+    chat_id = str(job.chat_id)
+    nombre_job = job.data 
+    
+    
+    from persistence import REMINDERS
+    
+    usuario_data = REMINDERS.get(chat_id, [])
+    
+    existe = any(r['name'] == nombre_job for r in usuario_data)
+
+    if existe:
+        await context.bot.send_message(chat_id, f"⏰ Recordatorio: {nombre_job}")
+    else:
+        
+        job.schedule_removal()
