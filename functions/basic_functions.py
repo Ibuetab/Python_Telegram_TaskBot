@@ -62,5 +62,23 @@ async def help(update:Update, context):
         f"• <b>/help</b> ➡️ Muestra una lista de comandos del bot\n\n"
         f"• <b>/addtask (nombre de tarea)</b> ➡️ añade una tarea a la lista de tareas\n\n"
         f"• <b>/showtasks</b> ➡️ Muestra la lista de tareas pendientes\n\n"
-        f"• <b>/deltask</b> ➡️ Permite seleccionar una tarea a eliminar de la lista de tareas pendientes\n\n", 
+        f"• <b>/deltask</b> ➡️ Permite seleccionar una tarea a eliminar de la lista de tareas pendientes\n\n"
+        f"• <b>/reminder</b> ➡️ Establece un recordatorio diario\n\n"
+        f"• <b>/deluser</b> ➡️ Elimina un usuario del bot\n\n",
     parse_mode = "HTML")
+
+
+
+
+async def delete_user(update:Update, context):
+    chat_id = update.effective_chat.id
+
+    if chat_id in persistence.REGISTERED_USERS:
+        
+        persistence.REGISTERED_USERS.pop(chat_id)
+        persistence.TASKLIST.pop(chat_id)
+    
+        await update.message.reply_text(f"Usuario borrado con éxito")
+
+    else:
+        await update.message.reply_text(f"No eres un usuario registrado")
