@@ -6,7 +6,7 @@ from telegram import Update
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 import data.persistence as persistence
-from data.time_zone import ZONE, time
+from data.time_zone import ZONE
 
 
 
@@ -62,6 +62,7 @@ async def help(update:Update, context):
         f"• <b>/help</b> ➡️ Muestra una lista de comandos del bot\n\n"
         f"• <b>/addtask (nombre de tarea)</b> ➡️ añade una tarea a la lista de tareas\n\n"
         f"• <b>/showtasks</b> ➡️ Muestra la lista de tareas pendientes\n\n"
+        f"• <b>/comtasks</b> ➡️ Muestra la lista de tareas pendientes y permite marcar las tareas realizadas como completadas\n\n"
         f"• <b>/deltask</b> ➡️ Permite seleccionar una tarea a eliminar de la lista de tareas pendientes\n\n"
         f"• <b>/reminder</b> ➡️ Establece un recordatorio diario\n\n"
         f"• <b>/deluser</b> ➡️ Elimina un usuario del bot\n\n",
