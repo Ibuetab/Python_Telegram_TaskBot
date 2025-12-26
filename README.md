@@ -10,6 +10,7 @@ El usuario dispondrá de los siguientes comandos para el uso del bot.
 /help -> Muestra la lista de comandos del bot  
 /addtask (nombre de la tarea) -> Añade una tarea como argumento tras el comando a la lista de tareas. Ej: /addtask Hacer la compra  
 /showtasks -> Muestra la lista de tareas pendientes del usuario  
+/comtask -> Muestra la lista de tareas pendientes y permite marcar las tareas realizadas como completadas  
 /deltask -> Permite eliminar una tarea de la lista de tareas pendientes  
 /reminder -> Establece un recordatorio los días seleccionados  
 /deluser -> Elimina completamente al usuario del bot, con sus tareas y recordatorios  
