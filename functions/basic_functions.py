@@ -77,6 +77,10 @@ async def delete_user(update:Update, context):
         
         persistence.REGISTERED_USERS.pop(chat_id)
         persistence.TASKLIST.pop(chat_id)
+
+        current_jobs = context.job_queue.get_jobs_by_name(str(chat_id))
+        for job in current_jobs:
+            job.schedule_removal()
     
         await update.message.reply_text(f"Usuario borrado con éxito")
 
