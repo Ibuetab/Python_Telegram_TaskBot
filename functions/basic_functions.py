@@ -32,6 +32,7 @@ def generate_id(chat_id):
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 
+
 async def start(update:Update, context):
 
     chat_id = update.effective_chat.id #Obtiene el id del chat
@@ -57,7 +58,6 @@ async def start(update:Update, context):
         
         await context.bot.send_message(chat_id = chat_id, text=f"Hola, {user}, utiliza el comando /help para ver una lista de comandos disponibles")
         print(f"DEBUG: Nuevo usuario registrado: {user}")
-        
 
 
     else:
@@ -65,9 +65,12 @@ async def start(update:Update, context):
             chat_id=chat_id,
             text="Ya estás registrado. Usa el comando /help para ver las opciones disponibles"
         )
+    
+    for key in persistence.REGISTERED_USERS:
+            print(f"{key}")
 
 
-
+#---------------------------------------------------------------------------------------------------
 
 async def help(update:Update, context):
     chat_id= update.effective_chat.id
@@ -80,25 +83,32 @@ async def help(update:Update, context):
         f"• <b>/comtasks</b> ➡️ Muestra la lista de tareas pendientes y permite marcar las tareas realizadas como completadas\n\n"
         f"• <b>/deltask</b> ➡️ Permite seleccionar una tarea a eliminar de la lista de tareas pendientes\n\n"
         f"• <b>/reminder</b> ➡️ Establece un recordatorio diario\n\n"
-        f"• <b>/deluser</b> ➡️ Elimina un usuario del bot\n\n",
+        f"• <b>/deluser</b> ➡️ Elimina tu usuario del bot\n\n",
     parse_mode = "HTML")
 
 
+#---------------------------------------------------------------------------------------------------
 
-
+#Función que borra al usuario del bot
 async def delete_user(update:Update, context):
+
     chat_id = update.effective_chat.id
 
-    if chat_id in persistence.REGISTERED_USERS:
-        
-        persistence.REGISTERED_USERS.pop(chat_id)
-        persistence.TASKLIST.pop(chat_id)
+    user_id = generate_id(chat_id) #Se calcula el id del usuario
 
-        current_jobs = context.job_queue.get_jobs_by_name(str(chat_id))
+    #Si el usuario está en nuestra base de datos, se borran todos sus datos, tareas y recordatorios
+    if user_id in persistence.REGISTERED_USERS:
+        
+        persistence.REGISTERED_USERS.pop(user_id)
+        persistence.TASKLIST.pop(user_id)
+
+        current_jobs = context.job_queue.get_jobs_by_name(str(user_id))
         for job in current_jobs:
             job.schedule_removal()
     
         await update.message.reply_text(f"Usuario borrado con éxito")
 
+    
+    #Si no está en el sistema, se le dice que no está registrado
     else:
         await update.message.reply_text(f"No eres un usuario registrado")
