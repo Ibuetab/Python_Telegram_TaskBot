@@ -9,8 +9,8 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ConversationHandler
 import data.persistence as persistence
 from data.time_zone import ZONE, DIAS
 from functions.basic_functions import start, help, delete_user
-from functions.task_functions import DELETE, COMPLETE
-from functions.task_functions import add_task, show_pending_tasks, delete_task, delete_button, cancel, complete_task, complete_button
+from functions.task_functions import TASK_NAME, DELETE, COMPLETE
+from functions.task_functions import new_task, add_task, show_pending_tasks, delete_task, delete_button, cancel, complete_task, complete_button
 from functions.reminders_functions import NAME,DAY,HOUR,MINUTE
 from functions.reminders_functions import reminder_name, get_reminder_name, get_day_frequency_buttons, get_hour, get_minute, save_and_finish
 from functions.menu import menu
@@ -41,7 +41,6 @@ def main():
     #---------------------------------------------------------------------------------------------------
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help))
-    app.add_handler(CommandHandler("addtask", add_task))
     app.add_handler(CommandHandler("showtasks", show_pending_tasks))
     app.add_handler(CommandHandler("deluser", delete_user))
 
@@ -49,7 +48,16 @@ def main():
 
     #Conversation Handlers
     #---------------------------------------------------------------------------------------------------
-    del_conv_handler = ConversationHandler(
+    add_task_conv_handler = ConversationHandler(
+        entry_points=[CommandHandler("addtask", new_task)],
+        states = {
+            TASK_NAME: [MessageHandler(filters.TEXT & (~filters.COMMAND), add_task)]
+        },
+        fallbacks=[CommandHandler("cancel", cancel)],
+        per_message=False)
+    
+    
+    del_task_conv_handler = ConversationHandler(
         entry_points=[CommandHandler("deltask", delete_task)],
         states = {
             DELETE: [CallbackQueryHandler(delete_button)]
@@ -78,8 +86,8 @@ def main():
         per_message=False)
     
     
-    
-    app.add_handler(del_conv_handler)
+    app.add_handler(add_task_conv_handler)
+    app.add_handler(del_task_conv_handler)
     app.add_handler(complete_task_handler)
     app.add_handler(reminder_handler)
 
