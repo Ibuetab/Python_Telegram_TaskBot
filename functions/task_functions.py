@@ -13,8 +13,7 @@ from data.security import generate_id
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 
-
-#Añadir tarea
+"""Añadir tarea"""
 TASK_NAME = range(1)
 
 #Pregunta primero el nombre de la tarea
@@ -64,25 +63,35 @@ async def add_task(update:Update, context:CallbackContext):
 
 #---------------------------------------------------------------------------------------------------
 
+"""Mostrar las tareas pendientes"""
 async def show_pending_tasks(update:Update, context):
 
     chat_id = update.effective_chat.id
 
-    if chat_id in persistence.TASKLIST:
-        tasks = persistence.TASKLIST[chat_id]["pending_tasks"]
+    user_id = generate_id(chat_id)
 
+    #Si existe el usuario
+    if user_id in persistence.TASKLIST:
+        tasks = persistence.TASKLIST[user_id]["pending_tasks"]
 
-        mensaje = f"Tienes las siguientes tareas pendientes: \n\n"
+        mensaje = f"📋 Tienes las siguientes tareas pendientes: \n\n"
 
+        botones = []
+
+        #Si no hay tareas pendientes
         if not tasks:
             await update.message.reply_text(text=f"No hay tareas para mostrar", parse_mode="MarkdownV2")
             return
         
         else:
             for task in tasks:
-                mensaje += f"• {task.capitalize()}\n"
+                #mensaje += f"• {task.capitalize()}\n"
+                boton = InlineKeyboardButton(text = f"✨ {task.capitalize()}", callback_data=f"")
+                botones.append([boton])
+                
+        markup = InlineKeyboardMarkup(botones)
         
-        await update.message.reply_text(mensaje, parse_mode="MarkdownV2")
+        await update.message.reply_text(mensaje, reply_markup=markup, parse_mode="MarkdownV2")
             
     
     else:
