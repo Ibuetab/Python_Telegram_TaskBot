@@ -1,9 +1,12 @@
-# Python Telegram TaskBot
+# <img width="99" height="101" alt="espadas-ezgif com-gif-maker (1) (1)" src="https://github.com/user-attachments/assets/2b223684-1a8c-4892-b718-ee356fbfa3a1" /> RPG TaskBot <img width="99" height="101" alt="espadas-ezgif com-gif-maker (1) (1)" src="https://github.com/user-attachments/assets/16710121-78cc-4480-9579-0dad964cc930" />
+
+
+
 
 ## Spanish
 La idea de este bot surge de la necesidad de mejorar la productividad mediante tareas y recordatorios, usando al mismo como herramienta para dicho fin.
-Su funcionamiento es sencillo, se crean los usuarios que interactúan con el bot y se almacenan en el mismo, de forma que en caso de avería o reinicio se recurre a la persistencia de datos. 
-El usuario dispondrá de los siguientes comandos para el uso del bot.
+Para fomentar la motivación al usuario, se va a implementar un sistema de niveles en el que el usuario elige un personaje, y va ganando experiencia conforme va completando tareas, como si de un juego de rol se tratase.
+
 
 ### Comandos del bot
 /start -> Inicializa el bot y almacena al usuario y sus datos en un archivo JSON  
