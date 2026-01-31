@@ -84,4 +84,4 @@ async def delete_user(update:Update, context):
 
 async def send_animation(update:Update, context):
      chat_id = update.effective_chat.id
-     await context.bot.send_sticker(chat_id = chat_id, sticker = "assets/characters/mage/male_mage_01.webm")
+     await context.bot.send_sticker(chat_id = chat_id, sticker = "assets/characters/mage/female_mage_01.webm")
