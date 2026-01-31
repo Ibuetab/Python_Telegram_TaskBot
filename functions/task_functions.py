@@ -96,8 +96,6 @@ async def show_pending_tasks(update:Update, context):
 #---------------------------------------------------------------------------------------------------
 
 """Borrar las tareas pendientes"""
-
-
 DELETE = range(1) #Estado del ConversationHandler
 
 #Función que solo muestra la lista de tareas pendientes como botones de teclado 
@@ -118,7 +116,7 @@ async def delete_task(update:Update, context:CallbackContext):
         keyboard = []
         
         #Crea una fila para cada tarea
-        for index,task in enumerate(user_tasklist):
+        for task in user_tasklist:
                 keyboard.append([InlineKeyboardButton(f"{task.capitalize()}", callback_data=task)])
 
         
@@ -136,7 +134,7 @@ async def delete_button(update:Update, context:CallbackContext):
 
     
     query = update.callback_query #Almacena la opción escogida por el usuario y los datos del mismo
-    await query.answer() #Elimina el estado de carga, se puede un mensaje entre los parentésis
+    await query.answer() #Elimina el estado de carga, se puede poner un mensaje entre los parentésis
 
     data = query.data #Obtiene los callback_data definidos en cada boton de la función delete_task, para condicionar las opciones mediante ifs
 
@@ -181,6 +179,7 @@ async def delete_button(update:Update, context:CallbackContext):
 #---------------------------------------------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------
 
+"""Completar las tareas"""
 COMPLETE = range(1)
 
 async def complete_task(update:Update, context:CallbackContext):
